@@ -1,5 +1,5 @@
 [package]
-name = "fuzzy-search"
+name = "blur"
 version = "0.1.0"
 edition = "2021"
 description = "A simple fuzzy search library for Rust."
@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/shmulisarmy/fuzzy-search"
 
 [lib]
-name = "fuzzy_search"
+name = "blur"
 path = "src/lib.rs"
 
 [dependencies]

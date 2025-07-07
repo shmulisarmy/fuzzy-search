@@ -1,4 +1,4 @@
-# fuzzy-search
+# blur
 
 A simple fuzzy search library for Rust.
 
@@ -12,12 +12,12 @@ A simple fuzzy search library for Rust.
 Add to your `Cargo.toml`:
 ```toml
 [dependencies]
-fuzzy-search = "0.1.0"
+blur = "0.1.0"
 ```
 
 ## Example
 ```rust
-use fuzzy_search::FuzzySearcher;
+use blur::FuzzySearcher;
 
 fn main() {
     let mut searcher = FuzzySearcher::new(
