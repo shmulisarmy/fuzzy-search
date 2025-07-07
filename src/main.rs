@@ -69,10 +69,13 @@ impl FuzzySearcher {
                     green(&search_state.text.chars().nth(*index).unwrap().to_string())
                 );
             }
-            for j in search_state.matching_indexes[search_state.matching_indexes.len() - 1] + 1
+            if search_state.matching_indexes.len() >0{//if its 0 then subtracting 1 will make it underflow
+
+                for j in search_state.matching_indexes[search_state.matching_indexes.len() - 1] + 1
                 ..search_state.text.len()
-            {
-                print!("{}", &search_state.text.chars().nth(j).unwrap().to_string());
+                {
+                    print!("{}", &search_state.text.chars().nth(j).unwrap().to_string());
+                }
             }
             dbg!(search_state.matching_indexes.len());
             println!();
@@ -135,9 +138,6 @@ fn main() {
             "world has gone lolonlyodkasp".to_string(),
         ],
     );
-    // searcher.display();
-    // searcher.remove_last_char_from_search_term();
-    println!("Enter your name:");
     while true {
         searcher.display();
 
@@ -147,10 +147,14 @@ fn main() {
             .read_line(&mut input)
             .expect("Failed to read line");
 
-        match input.chars().nth(0).unwrap() {
-            'q' => break,
-            '/' => searcher.remove_last_char_from_search_term(),
-            _ => searcher.add_char_to_end(input.chars().nth(0).unwrap()),
+
+        if input.len() == 1 {
+            //input.len() == 1 is like having an empty string
+            searcher.remove_last_char_from_search_term();
+        } else {
+            for i in 0..input.len()-1 {   //-1 is to get rid of the \n from doing enter
+                searcher.add_char_to_end(input.chars().nth(i).unwrap());
+            }
         }
     }
 }
@@ -159,15 +163,20 @@ fn main() {
 mod tests {
     use super::*;
 
-
     #[test]
     fn test_fuzzy_searching_ability() {
         let mut searcher = FuzzySearcher::new(
             "hello".to_string(),
             vec!["hel--lo".to_string(), "h-e-l-l-o".to_string()],
         );
-        assert_eq!(searcher.search_states[0].matching_indexes.len(), searcher.search_term.len()); 
-        assert_eq!(searcher.search_states[1].matching_indexes.len(), searcher.search_term.len());
+        assert_eq!(
+            searcher.search_states[0].matching_indexes.len(),
+            searcher.search_term.len()
+        );
+        assert_eq!(
+            searcher.search_states[1].matching_indexes.len(),
+            searcher.search_term.len()
+        );
     }
 
     #[test]
@@ -185,10 +194,8 @@ mod tests {
         assert_eq!(searcher1, searcher2);
     }
 
-   
-
     #[test]
-    
+
     fn test_add_char() {
         // the point is to make sure that adding a char yields out a similar state to having started with that char in the search term
         let mut searcher1 = FuzzySearcher::new(
@@ -207,13 +214,19 @@ mod tests {
         //this combines the idea from the past two tests to simulate a more real life use case
         let mut searcher1 = FuzzySearcher::new(
             "erttlr".to_string(),
-            vec!["in the sunrise of the falling rainbows".to_string(), "where the devil lies so are the tears in his eyes".to_string()],
+            vec![
+                "in the sunrise of the falling rainbows".to_string(),
+                "where the devil lies so are the tears in his eyes".to_string(),
+            ],
         );
         searcher1.remove_last_char_from_search_term();
         searcher1.remove_last_char_from_search_term();
         let mut searcher2 = FuzzySearcher::new(
             "ert".to_string(),
-            vec!["in the sunrise of the falling rainbows".to_string(), "where the devil lies so are the tears in his eyes".to_string()],
+            vec![
+                "in the sunrise of the falling rainbows".to_string(),
+                "where the devil lies so are the tears in his eyes".to_string(),
+            ],
         );
         searcher2.add_char_to_end('t');
         assert_eq!(searcher1, searcher2);
